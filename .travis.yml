@@ -1,0 +1,22 @@
+language: python
+python:
+    - "3.4"
+    - "3.5"
+    - "3.6"
+env:
+    - CODECOV_TOKEN="59b38eec-e1f7-46fe-bcfc-e77f5d4b603e"
+install:
+    - pip install -r requirements.txt
+    - pip install django
+    - pip install codecov
+script:
+    - cd demo_server
+    - python manage.py runserver &
+    - cd ..
+    - sleep 5
+    - nosetests
+    - coverage run tests.py
+    - kill `ps -ef|grep python|grep manage.py|grep -v grep|awk '{print $2}'`
+    - pip install .
+after_success:
+  - codecov
